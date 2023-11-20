@@ -66,13 +66,13 @@ class highScoreClass {
         
         if(e.key.keysym.sym != SDLK_RETURN)
         {
-          if ( (e.key.keysym.unicode & 0xFF80) == 0 && e.key.keysym.unicode != 0) {
+          if ( (e.key.keysym.scancode & 0xFF80) == 0 && e.key.keysym.scancode != 0) {
             if(e.key.keysym.sym == SDLK_BACKSPACE)
             {
               if(name.length() > 0)
                 name.erase(name.length()-1);
             } else {
-              name += e.key.keysym.unicode;
+              name += e.key.keysym.scancode;
             }
           }
         } else {

@@ -34,6 +34,7 @@ class controllerClass {
   GLfloat joystickLeftX; //There are two because the calibrated values differ
   GLfloat joystickRightX;
   int calMin, calMax, calLowJitter, calHighJitter;
+  const Uint8 *keyboardState;
 
   #ifdef WITH_WIIUSE
   wiimote** wiimotes;
@@ -46,7 +47,7 @@ class controllerClass {
   ~controllerClass();
   void movePaddle(GLfloat px);
   void btnPress();
-  bool get();
+  void get();
   void calibrate();
   #ifdef WITH_WIIUSE
   bool connectMote();
@@ -61,6 +62,9 @@ controllerClass::controllerClass(paddle_class *pc, bulletsClass *bu, ballManager
   shotTime=200;
   itemSelectTime=0;
 
+  SDL_PumpEvents();
+  keyboardState = SDL_GetKeyboardState( NULL );
+
   //Try to open a joystick.
   if(setting.joyEnabled && SDL_NumJoysticks() > 0)
   {
@@ -68,7 +72,7 @@ controllerClass::controllerClass(paddle_class *pc, bulletsClass *bu, ballManager
     joystickRightX = setting.controlMaxSpeed / setting.JoyCalMax;
     joystick = NULL;
     joystick = SDL_JoystickOpen(0);
-    if(SDL_JoystickOpened(0))
+    if(SDL_JoystickOpen(0))
     {
       cout << "Using joystick: '"<<SDL_JoystickName(0)<<"' as "<<(setting.joyIsDigital ? "digital":"analog")<<"."<<endl;
       SDL_JoystickEventState( SDL_ENABLE );
@@ -117,7 +121,7 @@ void controllerClass::btnPress()
   if(var.titleScreenShow)
   {
     var.titleScreenShow=0;
-    SDL_WarpMouse(var.halfresx,0);
+    SDL_WarpMouseInWindow(screen,var.halfresx,0);
     return;
   }
   
@@ -141,21 +145,21 @@ void controllerClass::btnPress()
   }
 }
 
-bool controllerClass::get()
+void controllerClass::get()
 {
-  Uint8 *keyStates;
-  Uint8 keyDown[3]; //Need this since its not a good idea to write to keyStates for some reason
+  //const Uint8 *keyStates;
+  //Uint8 keyDown[3]; //Need this since its not a good idea to write to keyStates for some reason
   shotTime += globalTicks;
-  SDL_PumpEvents();
-  keyStates = SDL_GetKeyState( NULL );
-  keyDown[0] = keyStates[setting.keyLeft];
-  keyDown[1] = keyStates[setting.keyRight];
-  keyDown[2] = keyStates[setting.keyShoot];
+  //SDL_PumpEvents();
+  //keyStates = SDL_GetKeyboardState( NULL );
+  //keyDown[0] = keyStates[setting.keyLeft];
+  //keyDown[1] = keyStates[setting.keyRight];
+  //keyDown[2] = keyStates[setting.keyShoot];
   
   itemSelectTime += globalTicks;
   //Read joystick here so we can override keypresses if the joystick is digital
   //We shouldn't need to check if the joystick is enabled, since it won't be opened if its not enabled anyway.
-  if(setting.joyEnabled && SDL_JoystickOpened(0))
+  /*if(setting.joyEnabled && SDL_JoystickOpen(0))
   {
     joystickx = SDL_JoystickGetAxis(joystick, 0);
     joysticky = SDL_JoystickGetAxis(joystick, 1);
@@ -214,7 +218,7 @@ bool controllerClass::get()
       //Move the paddle:
       movePaddle( paddle->posx += (x*globalMilliTicks) );
     }
-  }
+  }*/
 
   #ifdef WITH_WIIUSE
   if(var.wiiConnect)
@@ -261,13 +265,14 @@ bool controllerClass::get()
   #endif
 
   //React to keystates here, this way, if joyisdig it will press keys
-  if(keyDown[0])
+  //if(keyDown[0])
+  if(keyboardState[setting.keyLeft])
   {
     accel+=globalMilliTicks*setting.controlAccel;
     if(accel > setting.controlMaxSpeed)
       accel=setting.controlMaxSpeed;
     movePaddle( paddle->posx - ( accel*globalMilliTicks) );
-  } else if(keyDown[1])
+  } else if((keyboardState[setting.keyRight]))
   {
     accel+=globalMilliTicks*setting.controlAccel;
     if(accel > setting.controlMaxSpeed)
@@ -277,20 +282,20 @@ bool controllerClass::get()
       accel = setting.controlStartSpeed;
   }
 
-  if(keyDown[2])
+  if(keyboardState[setting.keyShoot])
   {
     btnPress();
-    return(1);
-  } else {
+    //return(1);
+  }/* else {
     return(0);
-  }
+  }*/
 }
 
 void controllerClass::calibrate()
 {
 
   Sint16 x=0;
-  if(SDL_JoystickOpened(0))
+  if(SDL_JoystickOpen(0))
   {
 
     x = SDL_JoystickGetAxis(joystick, 0);

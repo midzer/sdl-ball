@@ -143,7 +143,7 @@ public:
     texMgr.load(useTheme("/gfx/menu/highscorebg.png",setting.gfxTheme), tex[4]);
     
     tI = getThemes(); //Read themes and put them in the vector tI
-    listSaveGames(saveGameName);
+    //listSaveGames(saveGameName);
     
     //Baggrund
     glNewList(dl, GL_COMPILE);
@@ -248,13 +248,13 @@ public:
   {
     if(e.key.keysym.sym != SDLK_RETURN && e.key.keysym.sym != SDLK_ESCAPE)
     {
-      if ( (e.key.keysym.unicode & 0xFF80) == 0 && e.key.keysym.unicode != 0) {
+      if ( (e.key.keysym.scancode & 0xFF80) == 0 && e.key.keysym.scancode != 0) {
         if(e.key.keysym.sym == SDLK_BACKSPACE)
         {
           if(saveGameName[saveGameSlot].length() > 0)
             saveGameName[saveGameSlot].erase(saveGameName[saveGameSlot].length()-1);
         } else {
-          saveGameName[saveGameSlot] += e.key.keysym.unicode;
+          saveGameName[saveGameSlot] += e.key.keysym.scancode;
         }
       }
     } else {
@@ -456,7 +456,7 @@ public:
       
       //Calibrate
       glTranslatef(0.0,-0.22,0.0f);
-      if(SDL_JoystickOpened(0))
+      if(SDL_JoystickOpen(0))
       {
         if(var.menuItem==4)
           glCallList(dl+2);
@@ -505,7 +505,7 @@ public:
             var.menu=4;
             break;
           case 4:
-            if(SDL_JoystickOpened(0))
+            if(SDL_JoystickOpen(0))
             {
               var.menuJoyCalStage=0;
               var.menu=10;
@@ -625,7 +625,8 @@ public:
             setting.resx = 1024;
             setting.resy = 768;
 #ifndef WIN32
-            if(initScreen())
+            //if(initScreen())
+            resizeWindow(setting.resx, setting.resy);
 #endif
               writeSettings();
             break;
@@ -633,7 +634,8 @@ public:
             setting.resx = 1600;
             setting.resy = 1200;
 #ifndef WIN32
-            if(initScreen())
+            //if(initScreen())
+            resizeWindow(setting.resx, setting.resy);
 #endif
               writeSettings();
             break;
@@ -650,7 +652,8 @@ public:
               else
               setting.fullscreen=1;
 #ifndef WIN32
-            if(initScreen())
+            //if(initScreen())
+            resizeWindow(setting.resx, setting.resy);
 #endif
               writeSettings();
             break;

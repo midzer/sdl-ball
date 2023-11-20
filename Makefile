@@ -12,11 +12,11 @@ BINDIR=bin/
 STRIP=strip
 CXX?=g++
 
-CXXFLAGS+=-Wall `sdl-config --cflags` -DDATADIR="\"$(DATADIR)\""
+CXXFLAGS+=-Wall -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_TTF=2 -sUSE_SDL_MIXER=2 -I include/ -DDATADIR="\"$(DATADIR)\""
 
 #append -lwiiuse to compile with WIIUSE support
 #remove -lSDL_mixer if compiling with -DNOSOUND
-LIBS+=-lGL -lGLU `sdl-config --libs` -lSDL_image -lSDL_ttf -lSDL_mixer
+LIBS+=-lGL -lGLU -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_TTF=2 -sUSE_SDL_MIXER=2
 
 SOURCES=main.cpp 
 OBJECTS=$(SOURCES:.cpp=.o)
