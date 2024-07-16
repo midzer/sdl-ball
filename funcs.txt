@@ -1,0 +1,7 @@
+[
+    "main",
+    "SDL_Delay",
+    "SDL_GL_SwapWindow",
+    "Emscripten_GLES_SwapWindow",
+    "dynCall_v"
+]

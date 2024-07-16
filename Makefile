@@ -10,9 +10,9 @@ BINDIR=bin/
 #append -DWITH_WIIUSE to compile with WIIUSE support!
 #append -DNOSOUND to compile WITHOUT sound support
 STRIP=strip
-CXX?=g++
+CXX?=em++
 
-CXXFLAGS+=-Wall -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_TTF=2 -sUSE_SDL_MIXER=2 -I include/ -DDATADIR="\"$(DATADIR)\""
+CXXFLAGS+=-Wall -flto -O3 -fno-rtti -fno-exceptions -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_TTF=2 -sUSE_SDL_MIXER=2 -I include/ -DDATADIR="\"$(DATADIR)\""
 
 #append -lwiiuse to compile with WIIUSE support
 #remove -lSDL_mixer if compiling with -DNOSOUND
